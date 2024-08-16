@@ -1,7 +1,7 @@
 import { Client, Message as DiscordMessage, Partials } from "discord.js";
 import { Connector } from "../connector";
 import { App } from "../app";
-import { Message, TextMessageContent } from "../assistants";
+import { Message, TextMessageContent, Thread } from "../assistants";
 
 export class DiscordConnector implements Connector {
   private client: Client;
@@ -29,40 +29,41 @@ export class DiscordConnector implements Connector {
     await this.client.login(this.token);
   }
 
-  private addMessageToThread(threadId: string, message: DiscordMessage) {
-    this.threads.set(
-      threadId,
-      (this.threads.get(threadId) ?? []).concat(message)
-    );
-  }
-
   async onMessage(app: App, message: DiscordMessage): Promise<void> {
     if (message.channelId !== this.textChannelId || message.author.bot) return;
 
     const id = `discord-user-message-${message.id}`;
 
-    const threadId = `discord-thread-${message.id}`;
-    this.addMessageToThread(threadId, message);
+    const thread: DiscordThread = {
+      id: `discord-thread-${message.id}`,
+      messages: [message],
+    };
 
-    await app.onMessage(this, {
+    await app.onMessage(this, thread, {
       id,
       content: new TextMessageContent(message.content),
-      threadId,
     });
   }
 
-  async sendMessage(message: Message): Promise<void> {
-    const thread = this.threads.get(message.threadId);
-    if (!thread || thread.length === 0) {
+  async sendMessages(
+    thread: Thread,
+    messages: AsyncGenerator<Message>
+  ): Promise<void> {
+    const discordThread = thread as DiscordThread;
+    if (discordThread.messages.length === 0) {
       throw new Error("thread not found");
     }
 
-    const lastMessage = thread[thread.length - 1];
-    const discordMessage = await this.reply(
-      lastMessage,
-      message.content.string()
-    );
-    this.addMessageToThread(message.threadId, discordMessage);
+    let messageToReply =
+      discordThread.messages[discordThread.messages.length - 1];
+
+    for await (const message of messages) {
+      const discordMessage = await this.reply(
+        messageToReply,
+        message.content.string()
+      );
+      messageToReply = discordMessage;
+    }
   }
 
   // for test
@@ -70,3 +71,8 @@ export class DiscordConnector implements Connector {
     return message.reply(text);
   }
 }
+
+type DiscordThread = {
+  id: string;
+  messages: DiscordMessage[];
+};

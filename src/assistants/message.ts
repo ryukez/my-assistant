@@ -1,8 +1,11 @@
+export interface Thread {
+  id: string;
+}
+
 // messages in chat
 export type Message = {
   id: string;
   content: MessageContent;
-  threadId: string;
 };
 
 export type MessageContentType = "text";

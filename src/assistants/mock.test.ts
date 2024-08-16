@@ -11,7 +11,6 @@ describe("MockAssistant", () => {
     for await (const response of assistant.respond({
       id: "test-message",
       content: new TextMessageContent("Hello, world!"),
-      threadId: "test-thread",
     })) {
       responses.push(response);
     }
@@ -22,13 +21,11 @@ describe("MockAssistant", () => {
     expect(responses[0]).toEqual({
       id: expect.any(String),
       content: new TextMessageContent("Hello World!"),
-      threadId: "test-thread",
     });
 
     expect(responses[1]).toEqual({
       id: expect.any(String),
       content: new TextMessageContent("Your message: Hello, world!"),
-      threadId: "test-thread",
     });
   });
 });

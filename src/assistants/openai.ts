@@ -55,7 +55,6 @@ export class OpenAIAssistant {
       yield {
         id: `openai-${lastMessage.id}-${i / 500}`,
         content: new TextMessageContent(text.slice(i, i + 500)),
-        threadId: message.threadId,
       };
     }
   }

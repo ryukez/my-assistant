@@ -1,11 +1,15 @@
 import express from "express";
-import { Assistant, AssistantError, Message } from "../assistants";
+import { Assistant, AssistantError, Message, Thread } from "../assistants";
 import { logger } from "../logger";
 import { Connector } from "../connector";
 
 export interface App {
   server(): express.Express;
-  onMessage(connector: Connector, message: Message): Promise<void>;
+  onMessage(
+    connector: Connector,
+    thread: Thread,
+    message: Message
+  ): Promise<void>;
 }
 
 export class ExpressApp implements App {
@@ -43,11 +47,9 @@ export class ExpressApp implements App {
     return this.express;
   }
 
-  async onMessage(connector: Connector, message: Message) {
+  async onMessage(connector: Connector, thread: Thread, message: Message) {
     try {
-      for await (const msg of this.assistant.respond(message)) {
-        await connector.sendMessage(msg);
-      }
+      await connector.sendMessages(thread, this.assistant.respond(message));
     } catch (e) {
       let text = "Unhandled error";
       if (e instanceof AssistantError) {

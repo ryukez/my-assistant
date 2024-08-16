@@ -1,18 +1,11 @@
 import { Message as DiscordMessage } from "discord.js";
-import { MockAssistant, TextMessageContent } from "../assistants";
+import { Message, MockAssistant, TextMessageContent } from "../assistants";
 import { DiscordConnector } from "./connector";
 import { ExpressApp } from "../app";
 
 describe("DiscordConnector", () => {
   it("should respond to messages in the text channel", async () => {
     const connector = new DiscordConnector("token", "channel-id");
-
-    const app = new ExpressApp(new MockAssistant(), []);
-    jest
-      .spyOn(app, "onMessage")
-      .mockImplementation(async (conector, message) => {
-        expect(message.content.string()).toEqual("Hello, world!");
-      });
 
     const userMessage = {
       author: {
@@ -46,20 +39,35 @@ describe("DiscordConnector", () => {
       throw new Error("Unexpected message");
     });
 
+    const expectedThread = {
+      id: "discord-thread-user-message",
+      messages: [userMessage],
+    };
+
+    const app = new ExpressApp(new MockAssistant(), []);
+    jest
+      .spyOn(app, "onMessage")
+      .mockImplementation(async (conector, thread, message) => {
+        expect(thread).toEqual(expectedThread);
+        expect(message.content.string()).toEqual("Hello, world!");
+      });
+
     await connector.onMessage(app, userMessage);
 
     const threadId = "discord-thread-user-message";
 
-    await connector.sendMessage({
-      id: "response",
-      content: new TextMessageContent("message1"),
-      threadId,
-    });
-
-    await connector.sendMessage({
-      id: "response",
-      content: new TextMessageContent("message2"),
-      threadId,
-    });
+    await connector.sendMessages(expectedThread, generateMessages());
   });
 });
+
+async function* generateMessages(): AsyncGenerator<Message> {
+  yield {
+    id: "response",
+    content: new TextMessageContent("message1"),
+  };
+
+  yield {
+    id: "response",
+    content: new TextMessageContent("message2"),
+  };
+}

@@ -1,10 +1,8 @@
 import { Command } from "commander";
 import dotenv from "dotenv";
-import { runServer } from "../server";
 import { OpenAIAssistant } from "../assistants/openai";
 import { DiscordConnector } from "../discord";
 import { ExpressApp } from "../app";
-import { MockAssistant } from "../assistants";
 
 type Env = {
   DISCORD_TOKEN: string;

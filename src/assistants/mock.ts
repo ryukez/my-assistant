@@ -6,7 +6,6 @@ export class MockAssistant implements Assistant {
     yield {
       id: `mock-assistant-${Date.now()}-0`,
       content: new TextMessageContent(`Hello World!`),
-      threadId: message.threadId,
     };
 
     yield {
@@ -14,7 +13,6 @@ export class MockAssistant implements Assistant {
       content: new TextMessageContent(
         `Your message: ${message.content.string()}`
       ),
-      threadId: message.threadId,
     };
   }
 }
