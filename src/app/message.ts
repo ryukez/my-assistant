@@ -12,18 +12,12 @@ export type MessageContentType = "text";
 
 // message body
 export interface MessageContent {
-  type(): MessageContentType;
-  string(): string;
+  type: MessageContentType;
+  text: string;
 }
 
 export class TextMessageContent implements MessageContent {
   constructor(public text: string) {}
 
-  type(): MessageContentType {
-    return "text";
-  }
-
-  string(): string {
-    return this.text;
-  }
+  type: MessageContentType = "text";
 }

@@ -1,7 +1,6 @@
 import { Client, Message as DiscordMessage, Partials } from "discord.js";
 import { Connector } from "../connector";
-import { App } from "../app";
-import { Message, TextMessageContent, Thread } from "../assistants";
+import { App, Message, TextMessageContent, Thread } from "../app";
 
 export class DiscordConnector implements Connector {
   private client: Client;
@@ -60,7 +59,7 @@ export class DiscordConnector implements Connector {
     for await (const message of messages) {
       const discordMessage = await this.reply(
         messageToReply,
-        message.content.string()
+        message.content.text
       );
       messageToReply = discordMessage;
     }

@@ -1,9 +1,9 @@
 import OpenAI from "openai";
-import { AssistantError } from "../chat";
 import { MessageContentText } from "openai/resources/beta/threads/messages/messages";
-import { Message, TextMessageContent } from "./message";
+import { Message, TextMessageContent } from "../app/message";
+import { BrainError } from "./brain";
 
-export class OpenAIAssistant {
+export class OpenAIBrain {
   private client: OpenAI;
 
   async *respond(message: Message): AsyncGenerator<Message> {
@@ -12,7 +12,7 @@ export class OpenAIAssistant {
 
     await this.client.beta.threads.messages.create(threadId, {
       role: "user",
-      content: message.content.string(),
+      content: message.content.text,
     });
 
     let run = await this.client.beta.threads.runs.create(threadId, {
@@ -30,7 +30,10 @@ export class OpenAIAssistant {
       )
         continue;
 
-      if (run.status === "completed") break;
+      if (run.status === "completed") {
+        console.log(JSON.stringify(run, null, 2));
+        break;
+      }
 
       await sleep(1000);
     }
@@ -40,7 +43,7 @@ export class OpenAIAssistant {
     );
     const lastMessage = threadMessages.data[0];
     if (lastMessage.role !== "assistant") {
-      throw new AssistantError(
+      throw new BrainError(
         "internal",
         "invalid response of OpenAI API: lastMessage.role !== 'assistant'"
       );
@@ -49,6 +52,14 @@ export class OpenAIAssistant {
       .filter((c) => c.type === "text")
       .map((c) => (c as MessageContentText).text.value)
       .join("\n\n");
+
+    const annotations = lastMessage.content
+      .filter((c) => c.type === "text")
+      .flatMap((c) => (c as MessageContentText).text.annotations)
+      .map((a) => a.text)
+      .join("\n");
+
+    console.log(JSON.stringify(lastMessage, null, 2));
 
     // split by 500 characters
     for (let i = 0; i < text.length; i += 500) {

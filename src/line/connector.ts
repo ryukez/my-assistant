@@ -1,11 +1,11 @@
 import { messagingApi, middleware, WebhookEvent } from "@line/bot-sdk";
-import { App } from "../app";
 import {
+  App,
   Message,
   MessageContent,
   TextMessageContent,
   Thread,
-} from "../assistants";
+} from "../app";
 import { Connector } from "../connector";
 
 export class LineConnector implements Connector {
@@ -60,7 +60,7 @@ export class LineConnector implements Connector {
 
     const lineMessages: { type: "text"; text: string }[] = [];
     for await (const message of messages) {
-      lineMessages.push({ type: "text", text: message.content.string() });
+      lineMessages.push({ type: "text", text: message.content.text });
     }
 
     await client.replyMessage({

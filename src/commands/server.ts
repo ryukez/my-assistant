@@ -1,8 +1,8 @@
 import { Command } from "commander";
 import dotenv from "dotenv";
-import { OpenAIAssistant } from "../assistants/openai";
+import { OpenAIBrain } from "../brain/openai";
 import { DiscordConnector } from "../discord";
-import { ExpressApp } from "../app";
+import { ExpressApp } from "../app/app";
 import { LineConnector } from "../line/connector";
 
 type Env = {
@@ -29,10 +29,7 @@ export const serverCommand = new Command()
         throw new Error(".env file not found");
       })();
 
-    const assistant = new OpenAIAssistant(
-      env.OPENAI_API_KEY,
-      env.OPENAI_ASSISTANT_ID
-    );
+    const brain = new OpenAIBrain(env.OPENAI_API_KEY, env.OPENAI_ASSISTANT_ID);
 
     const discordConnector = new DiscordConnector(
       env.DISCORD_TOKEN,
@@ -44,6 +41,6 @@ export const serverCommand = new Command()
       env.LINE_CHANNEL_ACCESS_TOKEN
     );
 
-    const app = new ExpressApp(assistant, [discordConnector, lineConnector]);
+    const app = new ExpressApp(brain, [discordConnector, lineConnector]);
     app.run();
   });

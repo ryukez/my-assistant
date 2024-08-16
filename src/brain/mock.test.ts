@@ -1,14 +1,14 @@
-import { TextMessageContent } from "./message";
-import { MockAssistant } from "./mock";
+import { TextMessageContent } from "../app/message";
+import { MockBrain } from "./mock";
 
-describe("MockAssistant", () => {
+describe("MockBrain", () => {
   it("should respond with a message containing the original message", async () => {
     // Arrange
-    const assistant = new MockAssistant();
+    const brain = new MockBrain();
 
     // Act
     const responses = [];
-    for await (const response of assistant.respond({
+    for await (const response of brain.respond({
       id: "test-message",
       content: new TextMessageContent("Hello, world!"),
     })) {

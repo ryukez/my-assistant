@@ -1,5 +1,4 @@
-import { App } from "../app";
-import { Message, Thread } from "../assistants";
+import { App, Message, Thread } from "../app";
 
 export interface Connector {
   // Register event listener to app
