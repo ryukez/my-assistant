@@ -3,12 +3,20 @@ import dotenv from "dotenv";
 import { OpenAIAssistant } from "../assistants/openai";
 import { DiscordConnector } from "../discord";
 import { ExpressApp } from "../app";
+import { LineConnector } from "../line/connector";
 
 type Env = {
-  DISCORD_TOKEN: string;
-  DISCORD_TEXT_CHANNEL_ID: string;
+  // OpenAI
   OPENAI_API_KEY: string;
   OPENAI_ASSISTANT_ID: string;
+
+  // Discord
+  DISCORD_TOKEN: string;
+  DISCORD_TEXT_CHANNEL_ID: string;
+
+  // LINE
+  LINE_CHANNEL_SECRET: string;
+  LINE_CHANNEL_ACCESS_TOKEN: string;
 };
 
 export const serverCommand = new Command()
@@ -26,11 +34,16 @@ export const serverCommand = new Command()
       env.OPENAI_ASSISTANT_ID
     );
 
-    const discordBot = new DiscordConnector(
+    const discordConnector = new DiscordConnector(
       env.DISCORD_TOKEN,
       env.DISCORD_TEXT_CHANNEL_ID
     );
 
-    const app = new ExpressApp(assistant, [discordBot]);
+    const lineConnector = new LineConnector(
+      env.LINE_CHANNEL_SECRET,
+      env.LINE_CHANNEL_ACCESS_TOKEN
+    );
+
+    const app = new ExpressApp(assistant, [discordConnector, lineConnector]);
     app.run();
   });
