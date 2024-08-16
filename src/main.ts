@@ -68,8 +68,8 @@
 // discordBot.run();
 
 import { program } from "commander";
-import { discordCommand } from "./commands/discord";
+import { serverCommand } from "./commands/server";
 
-program.addCommand(discordCommand);
+program.addCommand(serverCommand);
 
 program.parse(process.argv);

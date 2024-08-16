@@ -1,16 +1,20 @@
 import { Assistant } from "./assistant";
-import { ChatMessage, TextMessage } from "./message";
+import { Message, TextMessageContent } from "./message";
 
 export class MockAssistant implements Assistant {
-  async *respond(message: ChatMessage): AsyncGenerator<ChatMessage> {
+  async *respond(message: Message): AsyncGenerator<Message> {
     yield {
       id: `mock-assistant-${Date.now()}-0`,
-      message: new TextMessage(`Hello World!`),
+      content: new TextMessageContent(`Hello World!`),
+      threadId: message.threadId,
     };
 
     yield {
       id: `mock-assistant-${Date.now()}-1`,
-      message: new TextMessage(`Your message: ${message.message.string()}`),
+      content: new TextMessageContent(
+        `Your message: ${message.content.string()}`
+      ),
+      threadId: message.threadId,
     };
   }
 }

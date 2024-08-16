@@ -1,3 +1,3 @@
 export { DiscordBot } from "./bot";
-export { DiscordBotV2 } from "./v2";
+export { DiscordConnector } from "./connector";
 export { DiscordBotVoiceExtension } from "./voice";

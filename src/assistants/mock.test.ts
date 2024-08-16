@@ -1,4 +1,4 @@
-import { TextMessage } from "./message";
+import { TextMessageContent } from "./message";
 import { MockAssistant } from "./mock";
 
 describe("MockAssistant", () => {
@@ -10,7 +10,8 @@ describe("MockAssistant", () => {
     const responses = [];
     for await (const response of assistant.respond({
       id: "test-message",
-      message: new TextMessage("Hello, world!"),
+      content: new TextMessageContent("Hello, world!"),
+      threadId: "test-thread",
     })) {
       responses.push(response);
     }
@@ -20,12 +21,14 @@ describe("MockAssistant", () => {
 
     expect(responses[0]).toEqual({
       id: expect.any(String),
-      message: new TextMessage("Hello World!"),
+      content: new TextMessageContent("Hello World!"),
+      threadId: "test-thread",
     });
 
     expect(responses[1]).toEqual({
       id: expect.any(String),
-      message: new TextMessage("Your message: Hello, world!"),
+      content: new TextMessageContent("Your message: Hello, world!"),
+      threadId: "test-thread",
     });
   });
 });

@@ -1,4 +1,4 @@
-import { ChatMessage } from "./message";
+import { Message } from "./message";
 
 export class AssistantError extends Error {
   constructor(public code: "internal" | "badRequest", message: string) {
@@ -9,5 +9,5 @@ export class AssistantError extends Error {
 export interface Assistant {
   // get assistant response
   // response messages are expected to have unique ids
-  respond(message: ChatMessage): AsyncGenerator<ChatMessage>;
+  respond(message: Message): AsyncGenerator<Message>;
 }

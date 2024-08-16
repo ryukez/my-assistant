@@ -1,21 +1,22 @@
-export type MessageType = "text";
-
 // messages in chat
-export type ChatMessage = {
+export type Message = {
   id: string;
-  message: Message;
+  content: MessageContent;
+  threadId: string;
 };
 
+export type MessageContentType = "text";
+
 // message body
-export interface Message {
-  type(): MessageType;
+export interface MessageContent {
+  type(): MessageContentType;
   string(): string;
 }
 
-export class TextMessage implements Message {
+export class TextMessageContent implements MessageContent {
   constructor(public text: string) {}
 
-  type(): MessageType {
+  type(): MessageContentType {
     return "text";
   }
 
