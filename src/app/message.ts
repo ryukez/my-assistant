@@ -8,7 +8,7 @@ export type Message = {
   content: MessageContent;
 };
 
-export type MessageContentType = "text";
+export type MessageContentType = string;
 
 // message body
 export interface MessageContent {
@@ -20,4 +20,11 @@ export class TextMessageContent implements MessageContent {
   constructor(public text: string) {}
 
   type: MessageContentType = "text";
+}
+
+export class UnknownMessageContent implements MessageContent {
+  constructor() {}
+
+  type: MessageContentType = "unknown";
+  text: string = "unknown content";
 }

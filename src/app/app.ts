@@ -1,51 +1,22 @@
-import express from "express";
 import { Brain, BrainError } from "../brain";
 import { logger } from "../logger";
 import { Connector } from "../connector";
 import { Message, Thread } from "./message";
+import { Process } from "../process";
 
-export interface App {
-  server(): express.Express;
-  onMessage(
-    connector: Connector,
-    thread: Thread,
-    message: Message
-  ): Promise<void>;
-}
-
-export class ExpressApp implements App {
-  private express: express.Express;
-
-  constructor(private brain: Brain, connectors: Connector[]) {
-    const e = express();
-
-    e.use(express.json());
-
-    e.get("/", (req, res) => {
-      res.send("🤖Bot is running!!🤖");
-    });
-
-    // GAEで最小インスタンス数を指定するには、Warmup Endpoint を有効にする必要がある
-    e.get("/_ah/warmup", (req, res) => {
-      res.sendStatus(200);
-    });
-
-    this.express = e;
-
+export class App {
+  constructor(
+    private process: Process,
+    private brain: Brain,
+    connectors: Connector[]
+  ) {
     for (const connector of connectors) {
-      connector.addListener(this);
+      connector.addListener(this.onMessage.bind(this));
     }
   }
 
-  run() {
-    this.express.listen(8080, () => {
-      logger.info("App listening on port 8080");
-    });
-  }
-
-  // TODO: abstract server implmentation
-  server() {
-    return this.express;
+  async run() {
+    await this.process.run();
   }
 
   async onMessage(connector: Connector, thread: Thread, message: Message) {

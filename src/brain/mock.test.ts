@@ -1,4 +1,4 @@
-import { TextMessageContent } from "../app/message";
+import { TextMessageContent } from "../app";
 import { MockBrain } from "./mock";
 
 describe("MockBrain", () => {

@@ -1,5 +1,5 @@
 import { Brain } from "./brain";
-import { Message, TextMessageContent } from "../app/message";
+import { Message, TextMessageContent } from "../app";
 
 export class MockBrain implements Brain {
   async *respond(message: Message): AsyncGenerator<Message> {

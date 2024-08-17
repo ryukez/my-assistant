@@ -1,6 +1,6 @@
 import { Client, Message as DiscordMessage, Partials } from "discord.js";
-import { Connector } from "../connector";
-import { App, Message, TextMessageContent, Thread } from "../app";
+import { Connector } from "..";
+import { Message, MessageHandler, TextMessageContent, Thread } from "../../app";
 
 export class DiscordConnector implements Connector {
   private client: Client;
@@ -20,15 +20,18 @@ export class DiscordConnector implements Connector {
     });
   }
 
-  async addListener(app: App): Promise<void> {
+  async addListener(handler: MessageHandler): Promise<void> {
     this.client.on("messageCreate", async (message: DiscordMessage) =>
-      this.onMessage(app, message)
+      this.onMessage(message, handler)
     );
 
     await this.client.login(this.token);
   }
 
-  async onMessage(app: App, message: DiscordMessage): Promise<void> {
+  async onMessage(
+    message: DiscordMessage,
+    handler: MessageHandler
+  ): Promise<void> {
     if (message.channelId !== this.textChannelId || message.author.bot) return;
 
     const id = `discord-user-message-${message.id}`;
@@ -38,7 +41,7 @@ export class DiscordConnector implements Connector {
       messages: [message],
     };
 
-    await app.onMessage(this, thread, {
+    await handler(this, thread, {
       id,
       content: new TextMessageContent(message.content),
     });

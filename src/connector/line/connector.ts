@@ -1,21 +1,30 @@
 import { messagingApi, middleware, WebhookEvent } from "@line/bot-sdk";
 import {
-  App,
   Message,
   MessageContent,
+  MessageHandler,
   TextMessageContent,
   Thread,
-} from "../app";
-import { Connector } from "../connector";
+  UnknownMessageContent,
+} from "../../app";
+import { Connector } from "..";
+import { Server } from "../../process";
 
 export class LineConnector implements Connector {
-  constructor(
-    private channelSecret: string,
-    private channelAccessToken: string
-  ) {}
+  private client: messagingApi.MessagingApiClient;
 
-  async addListener(app: App): Promise<void> {
-    app.server().post(
+  constructor(
+    private server: Server,
+    private channelSecret: string,
+    channelAccessToken: string
+  ) {
+    this.client = new messagingApi.MessagingApiClient({
+      channelAccessToken,
+    });
+  }
+
+  async addListener(handler: MessageHandler): Promise<void> {
+    this.server.express().post(
       "/webhook/line",
       async (req, res) => {
         for (const event of req.body.events as WebhookEvent[]) {
@@ -23,11 +32,12 @@ export class LineConnector implements Connector {
             continue;
           }
 
-          const content = ((): MessageContent => {
-            if (event.message.type === "text")
+          const content: MessageContent = (() => {
+            if (event.message.type === "text") {
               return new TextMessageContent(event.message.text);
-
-            throw new Error("Unsupported message type");
+            }
+            // TODO: handle other message types
+            return new UnknownMessageContent();
           })();
 
           const id = `line-user-message-${event.message.id}`;
@@ -37,7 +47,15 @@ export class LineConnector implements Connector {
             replyToken: event.replyToken,
           };
 
-          await app.onMessage(this, thread, {
+          // Show loading animation
+          if (event.source.userId) {
+            await this.client.showLoadingAnimation({
+              chatId: event.source.userId,
+              loadingSeconds: 60,
+            });
+          }
+
+          await handler(this, thread, {
             id,
             content,
           });
@@ -54,16 +72,12 @@ export class LineConnector implements Connector {
   ): Promise<void> {
     const lineThread = thread as LineThread;
 
-    const client = new messagingApi.MessagingApiClient({
-      channelAccessToken: this.channelAccessToken,
-    });
-
     const lineMessages: { type: "text"; text: string }[] = [];
     for await (const message of messages) {
       lineMessages.push({ type: "text", text: message.content.text });
     }
 
-    await client.replyMessage({
+    await this.client.replyMessage({
       replyToken: lineThread.replyToken,
       messages: lineMessages,
     });

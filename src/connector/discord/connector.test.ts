@@ -1,7 +1,6 @@
 import { Message as DiscordMessage } from "discord.js";
 import { DiscordConnector } from "./connector";
-import { ExpressApp, Message, TextMessageContent } from "../app";
-import { MockBrain } from "../brain";
+import { Message, MessageHandler, TextMessageContent } from "../../app";
 
 describe("DiscordConnector", () => {
   it("should respond to messages in the text channel", async () => {
@@ -44,15 +43,12 @@ describe("DiscordConnector", () => {
       messages: [userMessage],
     };
 
-    const app = new ExpressApp(new MockBrain(), []);
-    jest
-      .spyOn(app, "onMessage")
-      .mockImplementation(async (conector, thread, message) => {
-        expect(thread).toEqual(expectedThread);
-        expect(message.content.text).toEqual("Hello, world!");
-      });
+    const handler: MessageHandler = async (conector, thread, message) => {
+      expect(thread).toEqual(expectedThread);
+      expect(message.content.text).toEqual("Hello, world!");
+    };
 
-    await connector.onMessage(app, userMessage);
+    await connector.onMessage(userMessage, handler);
 
     const threadId = "discord-thread-user-message";
 
