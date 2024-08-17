@@ -112,12 +112,33 @@ npm install
 npx tsc
 ```
 
+**mock**
+
 ```sh
 % node dist/examples/mock/main.js cli
 > waiting input...: Hello!
 [mock-1723861916272-0] Hello World!
 [mock-1723861916273-1] Your message: Hello!
 ```
+
+**discordbot**
+
+> [!NOTE]
+> Take care, running this example consumes OpenAI credits! (Usually 1 message makes only <$0.01 with gpt-4o-mini)
+
+You need to prepare [OpenAI API key](https://platform.openai.com/docs/quickstart), and [Discord token & text_channel_id](https://discord.com/developers/docs/quick-start/getting-started). Refer to official documents for details.
+
+```sh
+export DISCORD_TOKEN=xxxxxx
+export DISCORD_TEXT_CHANNEL_ID=xxxxxx
+export OPENAI_API_KEY=xxxxxx
+```
+
+```sh
+% node dist/examples/discordbot/main.js server
+```
+
+Now you can chat with assistant in the designated text channel!
 
 ## Disclaimer
 
