@@ -14,6 +14,8 @@ See `examples/` directory for the actual usages.
 
 We need 3 core components to build assistant.
 
+![untitled (15)](https://github.com/user-attachments/assets/c429ca69-545d-49c9-a231-22e45d71b4e4)
+
 ### Process
 
 Main process running while app is active, ex. server, cli.
@@ -78,6 +80,9 @@ Connector is expected to have two methods.
 
 `Thread` is a concept to organize messsages into groups. Thread design depends on chat application, so it is the responsibility of Connector to handle threading. You should define own thread with unique identifier. With proper design of threading, Brain component can take related messages into consideration when generating responses.
 
+> [!NOTE]
+> Currently, only Discord and LINE connectors are implemented. Other connectors will be ready soon, but you can easily implement them by yourself!
+
 ### App
 
 App is a simple component to compile above build blocks into a single application.
@@ -139,6 +144,8 @@ export OPENAI_API_KEY=xxxxxx
 ```
 
 Now you can chat with assistant in the designated text channel!
+
+<img width="375" alt="image" src="https://github.com/user-attachments/assets/5388f167-ae4f-4eab-8dff-29b5638ce026">
 
 ## Disclaimer
 
