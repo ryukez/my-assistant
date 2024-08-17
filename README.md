@@ -2,6 +2,8 @@
 
 Typescript framework for building personal assistant easily.
 
+<a href="./README-ja.md">日本語の README はこちら</a>
+
 ## Install
 
 ```sh
@@ -14,7 +16,7 @@ See `examples/` directory for the actual usages.
 
 We need 3 core components to build assistant.
 
-![untitled (15)](https://github.com/user-attachments/assets/c429ca69-545d-49c9-a231-22e45d71b4e4)
+![overview](https://github.com/user-attachments/assets/c429ca69-545d-49c9-a231-22e45d71b4e4)
 
 ### Process
 

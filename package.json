@@ -1,6 +1,6 @@
 {
   "name": "my-assistant",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "typescript framework for building personal assistant easily",
   "type": "commonjs",
   "main": "dist/index.js",
