@@ -44,6 +44,9 @@ export class DiscordConnector implements Connector {
     await handler(this, thread, {
       id,
       content: new TextMessageContent(message.content),
+      user: {
+        id: `discord:${message.author.id}`,
+      },
     });
   }
 

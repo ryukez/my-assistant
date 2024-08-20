@@ -58,6 +58,9 @@ export class LineConnector implements Connector {
           await handler(this, thread, {
             id,
             content,
+            user: event.source.userId
+              ? { id: `line:${event.source.userId}` }
+              : undefined,
           });
         }
         res.sendStatus(200);

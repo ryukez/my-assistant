@@ -6,6 +6,9 @@ export interface Thread {
 export type Message = {
   id: string;
   content: MessageContent;
+  user?: {
+    id: string;
+  };
 };
 
 export type MessageContentType = string;
