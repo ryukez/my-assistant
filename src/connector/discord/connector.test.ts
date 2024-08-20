@@ -9,6 +9,7 @@ describe("DiscordConnector", () => {
     const userMessage = {
       author: {
         bot: false,
+        id: "user-id",
       },
       channelId: "channel-id",
       id: "user-message",
