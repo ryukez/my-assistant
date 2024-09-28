@@ -36,7 +36,7 @@ export interface Process {
 
 ```ts
 export interface Brain {
-  respond(message: Message): AsyncGenerator<Message>;
+  respond(thread: Thread, message: Message): AsyncGenerator<Message>;
 }
 ```
 

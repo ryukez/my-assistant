@@ -1,11 +1,11 @@
 import OpenAI from "openai";
-import { Message, TextMessageContent } from "../app";
+import { Message, TextMessageContent, Thread } from "../app";
 import { BrainError } from "./brain";
 
 export class OpenAIChatCompletionBrain {
   private client: OpenAI;
 
-  async *respond(message: Message): AsyncGenerator<Message> {
+  async *respond(thread: Thread, message: Message): AsyncGenerator<Message> {
     const completion = await this.client.chat.completions.create({
       model: "gpt-4o-mini-2024-07-18",
       messages: [
