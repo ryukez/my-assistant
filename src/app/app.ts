@@ -21,7 +21,7 @@ export class App {
 
   async onMessage(connector: Connector, thread: Thread, message: Message) {
     try {
-      await connector.sendMessages(thread, this.brain.respond(message));
+      await connector.sendMessages(thread, this.brain.respond(thread, message));
     } catch (e) {
       let text = "Unhandled error";
       if (e instanceof BrainError) {

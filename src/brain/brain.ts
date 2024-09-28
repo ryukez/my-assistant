@@ -1,4 +1,4 @@
-import { Message } from "../app/message";
+import { Message, Thread } from "../app";
 
 export class BrainError extends Error {
   constructor(public code: "internal" | "badRequest", message: string) {
@@ -9,5 +9,5 @@ export class BrainError extends Error {
 export interface Brain {
   // get bot response
   // response messages are expected to have unique ids
-  respond(message: Message): AsyncGenerator<Message>;
+  respond(thread: Thread, message: Message): AsyncGenerator<Message>;
 }

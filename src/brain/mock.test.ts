@@ -8,10 +8,13 @@ describe("MockBrain", () => {
 
     // Act
     const responses = [];
-    for await (const response of brain.respond({
-      id: "test-message",
-      content: new TextMessageContent("Hello, world!"),
-    })) {
+    for await (const response of brain.respond(
+      { id: "test-thread" },
+      {
+        id: "test-message",
+        content: new TextMessageContent("Hello, world!"),
+      }
+    )) {
       responses.push(response);
     }
 
