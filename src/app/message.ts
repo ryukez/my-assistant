@@ -25,6 +25,15 @@ export class TextMessageContent implements MessageContent {
   type: MessageContentType = "text";
 }
 
+export class ImageMessageContent implements MessageContent {
+  constructor(public altText: string, public imageURL: string) {}
+
+  type: MessageContentType = "image";
+  get text() {
+    return this.altText;
+  }
+}
+
 export class UnknownMessageContent implements MessageContent {
   constructor() {}
 

@@ -1,5 +1,6 @@
 import { messagingApi, middleware, WebhookEvent } from "@line/bot-sdk";
 import {
+  ImageMessageContent,
   Message,
   MessageContent,
   MessageHandler,
@@ -75,9 +76,21 @@ export class LineConnector implements Connector {
   ): Promise<void> {
     const lineThread = thread as LineThread;
 
-    const lineMessages: { type: "text"; text: string }[] = [];
+    const lineMessages: messagingApi.Message[] = [];
     for await (const message of messages) {
-      lineMessages.push({ type: "text", text: message.content.text });
+      switch (message.content.type) {
+        case "text":
+          lineMessages.push({ type: "text", text: message.content.text });
+          break;
+        case "image":
+          const content = message.content as ImageMessageContent;
+          lineMessages.push({
+            type: "image",
+            originalContentUrl: content.imageURL,
+            previewImageUrl: content.imageURL,
+          });
+          break;
+      }
     }
 
     await this.client.replyMessage({
